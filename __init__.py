@@ -54,6 +54,12 @@ class ExportJSON( bpy.types.Operator, ExportHelper ):
         default=""
     )
 
+    option_bone_weight_count = IntProperty(
+        name='Bone Weight Count',
+        description='Max number of weights that can influence a vertex (default is 3)',
+        default=3
+    )
+
     def invoke( self, context, event ):
         return ExportHelper.invoke( self, context, event )
     
@@ -69,6 +75,12 @@ class ExportJSON( bpy.types.Operator, ExportHelper ):
         
         if not self.properties.option_animation_filename:
             self.properties.option_animation_filename = os.path.splitext(self.properties.filepath)[0] + "_anim"
+
+        if self.properties.option_bone_weight_count < 1:
+            self.properties.option_bone_weight_count = 1
+
+        if self.properties.option_bone_weight_count > 4:
+            self.properties.option_bone_weight_count = 4
         
         filepath = self.filepath
         
@@ -77,6 +89,12 @@ class ExportJSON( bpy.types.Operator, ExportHelper ):
 
     def draw(self, context):
         layout = self.layout
+
+        row = layout.row()
+        row.label(text="Options:")
+
+        row = layout.row()
+        row.prop(self.properties, "option_bone_weight_count")
 
         row = layout.row()
         row.label(text="Animation:")

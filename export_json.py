@@ -6,8 +6,6 @@ import os.path
 import math
 import operator
 
-MAX_INFLUENCES = 3
-
 
 # #####################################################
 # Utils
@@ -94,6 +92,8 @@ TEMPLATE_FILE = """\
 
 	"bones": [%(bones)s],
 
+	"boneWeightCount": %(boneWeightCount)s,
+
 	"boneWeights": [%(boneWeights)s],
 
 	"boneIndices": [%(boneIndices)s]
@@ -179,7 +179,7 @@ def get_animation():
 
 	return animations_string
 
-def get_mesh_string( obj ):
+def get_mesh_string( obj, boneWeightCount ):
 	mesh = obj.to_mesh( bpy.context.scene, True, "PREVIEW" )
 
 	vertices = []
@@ -257,7 +257,7 @@ def get_mesh_string( obj ):
 				for i in range(len(bone_array)):
 					bone_array[i][1] /= total_weight
 
-				for i in range(MAX_INFLUENCES):
+				for i in range(boneWeightCount):
 					if i < len(bone_array):
 						bone_proxy = bone_array[i]
 
@@ -333,6 +333,7 @@ def get_mesh_string( obj ):
 		"uvs": flat_array( uvs ),
 		"faces": flat_array( indices ),
 		"bones": ",".join( bones ),
+		"boneWeightCount": str(boneWeightCount),
 		"boneIndices": flat_array( boneIndices ),
 		"boneWeights": flat_array( boneWeights )
 	}
@@ -351,8 +352,8 @@ def strip_file( string ):
 
 	return out
 
-def export_mesh( obj, filepath ):
-	write_file( filepath, strip_file( get_mesh_string( obj ) ) )
+def export_mesh( obj, filepath, boneWeightCount ):
+	write_file( filepath, strip_file( get_mesh_string( obj, boneWeightCount ) ) )
 	print("writing", filepath, "done")
 
 def export_mesh_animation( filepath ):
@@ -372,7 +373,7 @@ def save( operator, context, properties ):
 	bpy.ops.object.modifier_add( type="TRIANGULATE" )
 	bpy.ops.object.modifier_apply( apply_as = "DATA", modifier = "Triangulate" )
 
-	export_mesh( context.active_object, filepath )
+	export_mesh( context.active_object, filepath, properties.option_bone_weight_count )
 
 	if properties.option_animation == True:
 		export_mesh_animation( ensure_extension(properties.option_animation_filename, ".json") )
