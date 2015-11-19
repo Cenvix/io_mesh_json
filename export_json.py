@@ -366,6 +366,7 @@ def save( operator, context, properties ):
 	bpy.ops.object.mode_set( mode = "OBJECT" )
 	bpy.ops.object.modifier_add( type="TRIANGULATE" )
 	bpy.ops.object.modifier_apply( apply_as = "DATA", modifier = "Triangulate" )
+	bpy.ops.object.convert( target = "MESH" )
 
 	export_mesh( context.active_object, filepath, properties.option_bone_weight_count )
 
