@@ -88,8 +88,6 @@ TEMPLATE_FILE = """\
 
 	"uvs": [%(uvs)s],
 
-	"faces": [%(faces)s],
-
 	"bones": [%(bones)s],
 
 	"boneWeightCount": %(boneWeightCount)s,
@@ -187,7 +185,6 @@ def get_mesh_string( obj, boneWeightCount ):
 	tangents = []
 	colors = []
 	uvs = []
-	indices = []
 	bones = []
 	boneIndices = []
 	boneWeights = []
@@ -207,8 +204,6 @@ def get_mesh_string( obj, boneWeightCount ):
 			normals.append( obj.data.vertices[ vertex ].normal.x )
 			normals.append( obj.data.vertices[ vertex ].normal.y )
 			normals.append( obj.data.vertices[ vertex ].normal.z )
-
-			indices.append( vertex_number )
 
 	if len( mesh.tessface_uv_textures ) > 0:
 		for data in mesh.tessface_uv_textures.active.data:
@@ -331,7 +326,6 @@ def get_mesh_string( obj, boneWeightCount ):
 		"normals":  flat_array( normals ),
 		"colors": flat_array( colors ),
 		"uvs": flat_array( uvs ),
-		"faces": flat_array( indices ),
 		"bones": ",".join( bones ),
 		"boneWeightCount": str(boneWeightCount),
 		"boneIndices": flat_array( boneIndices ),
